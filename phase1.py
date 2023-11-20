@@ -66,8 +66,6 @@ def get_historical_data(symbol, start_date, end_date, value_type):
             }
 
         return historical_data
-    else:
-        raise Exception(f"La requête a échoué avec le code d'état {response.status_code}")
 def format_date(date_str):
     """convertir en datetime"""
     if isinstance(date_str, str):
@@ -95,8 +93,8 @@ def main():
             if args.valeur == "volume":
                 a = format_date(end_date)
                 print(f"titre={symbol}: valeur=volume, début={a}, fin={a}")
-                for W, volume in historical_data.items():
-                    print(f"[({format_date1(W)}, {volume})]")
+                for Date, volume in historical_data.items():
+                    print(f"[({format_date1(Date)}, {volume})]")
             else:
                 a=format_date(start_date)
                 b=format_date(end_date)
