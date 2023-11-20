@@ -1,8 +1,8 @@
 """Phase1"""
 import argparse
-import requests
 import json
 from datetime import date, datetime
+import requests
 
 def parse_args():
     """module parse_args"""
@@ -67,7 +67,8 @@ def get_historical_data(symbol, start_date, end_date, value_type):
             }
 
         return historical_data
-    
+    else:
+        return None
 def format_date(date_str):
     """convertir en datetime"""
     if isinstance(date_str, str):
