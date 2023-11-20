@@ -1,10 +1,13 @@
-#Phase1
+"""Phase1"""
 import argparse
 import json
 from datetime import date
 from datetime import datetime
 import requests
-def parse_args():#module parse_args
+def parse_args():
+    """
+    Analyse les arguments de ligne de commande et retourne les valeurs spécifiées.
+    """
     parser = argparse.ArgumentParser(
         description="Extraction de valeurs historiques pour un ou plusieurs symboles boursiers."
     )
@@ -30,13 +33,20 @@ def parse_args():#module parse_args
 
     return parser.parse_args()
 
-def get_start_date(date_debut):#get_start_date
+def get_start_date(date_debut):
+    """
+    Retourne la date de début au format AAAA-MM-JJ ou la date actuelle.
+    """
     return date_debut or str(date.today())
 
-def get_end_date(date_fin):# get_end_date
+def get_end_date(date_fin):
+    """
+    Retourne la date de fin au format AAAA-MM-JJ ou la date actuelle.
+    """
     return date_fin or str(date.today())
 
-def get_historical_data(symbol, start_date, end_date, value_type):#get_historical_dat
+def get_historical_data(symbol, start_date, end_date, value_type):
+    """get_historical_dat2"""
     url = f'https://pax.ulaval.ca/action/{symbol}/historique/'
 
     params = {
@@ -68,17 +78,20 @@ def get_historical_data(symbol, start_date, end_date, value_type):#get_historica
         return None
     return historical_data
 
-def format_date(date_str):#convertir en format datetime
+def format_date(date_str):
+    """convertir en format datetime"""
     if isinstance(date_str, str):
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
         return date_obj.strftime("datetime.date(%Y, %m, %d)")
     return date_str
 
-def format_date1(date_obj):#convertir en format datetime
+def format_date1(date_obj):
+    """convertir en format datetime"""
     return f"datetime.date({date_obj.year}, {date_obj.month}, {date_obj.day})"
 
 
-def main():#affichage
+def main():
+    """affichage"""
     args = parse_args()
     start_date = get_start_date(args.debut)
     end_date = get_end_date(args.fin)
@@ -94,7 +107,7 @@ def main():#affichage
         if historical_data:
             if args.valeur == "volume":
                 formatted_date = format_date(end_date)
-                print(f"titre={symbol}: valeur=volume, début={formatted_date}, fin={formatted_date}")
+                print(f"titre={symbol}: valeur=volume, début={formatted_date},fin={formatted_date}")
                 for date, volume in historical_data.items():
                     print(f"[({format_date1(date)}, {volume})]")
             else:
