@@ -3,7 +3,6 @@ import argparse
 import json
 from datetime import date, datetime
 import requests
-
 def parse_args():
     """module parse_args"""
     parser = argparse.ArgumentParser(
@@ -53,7 +52,7 @@ def get_historical_data(symbol, start_date, end_date, value_type):
     if response.status_code == 200:
         data = json.loads(response.text)
         historical_data = data.get('historique', {})
-        return historical_data
+
         if start_date and end_date:
             historical_data = {
                 datetime.strptime(date, "%Y-%m-%d").date(): values.get(value_type, None)
@@ -67,6 +66,8 @@ def get_historical_data(symbol, start_date, end_date, value_type):
             }
 
         return historical_data
+    else:
+        raise Exception(f"La requête a échoué avec le code d'état {response.status_code}")
 def format_date(date_str):
     """convertir en datetime"""
     if isinstance(date_str, str):
@@ -94,8 +95,8 @@ def main():
             if args.valeur == "volume":
                 a = format_date(end_date)
                 print(f"titre={symbol}: valeur=volume, début={a}, fin={a}")
-                for historical_date, volume in historical_data.items():
-                    print(f"[({format_date1(historical_date)}, {volume})]")
+                for W, volume in historical_data.items():
+                    print(f"[({format_date1(W)}, {volume})]")
             else:
                 a=format_date(start_date)
                 b=format_date(end_date)
