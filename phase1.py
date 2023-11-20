@@ -1,9 +1,11 @@
+"""Phase1"""
 import argparse
 import requests
 import json
 from datetime import date, datetime
 
 def parse_args():
+    """module parse_args"""
     parser = argparse.ArgumentParser(
         description="Extraction de valeurs historiques pour un ou plusieurs symboles boursiers."
     )
@@ -12,11 +14,11 @@ def parse_args():
         "symbole", nargs="+", help="Nom d'un symbole boursier"
     )
     parser.add_argument(
-        "-d", "--debut", type=str, metavar="DATE", 
+        "-d", "--debut", type=str, metavar="DATE",
         help="Date recherchée la plus ancienne (format: AAAA-MM-JJ)"
     )
     parser.add_argument(
-        "-f", "--fin", type=str, metavar="DATE", 
+        "-f", "--fin", type=str, metavar="DATE",
         help="Date recherchée la plus récente (format: AAAA-MM-JJ)"
     )
     parser.add_argument(
@@ -30,12 +32,15 @@ def parse_args():
     return parser.parse_args()
 
 def get_start_date(date_debut):
+    """module de date de debut"""
     return date_debut or str(date.today())
 
 def get_end_date(date_fin):
+    """module de date de fin"""
     return date_fin or str(date.today())
 
 def get_historical_data(symbol, start_date, end_date, value_type):
+    """module historical"""
     url = f'https://pax.ulaval.ca/action/{symbol}/historique/'
 
     params = {
@@ -51,33 +56,31 @@ def get_historical_data(symbol, start_date, end_date, value_type):
 
         if start_date and end_date:
             historical_data = {
-                datetime.strptime(date, "%Y-%m-%d").date():
-                 values.get(value_type, None)
+                datetime.strptime(date, "%Y-%m-%d").date(): values.get(value_type, None)
                 for date, values in historical_data.items()
             }
 
         if value_type == "volume":
             historical_data = {
                 date: volume
-                for date, volume in historical_data.items() 
-                if volume is not None
+                for date, volume in historical_data.items() if volume is not None
             }
 
         return historical_data
-    else:
-        print(f"Erreur lors de la récupération des données pour {symbol}")
-        return None
     
 def format_date(date_str):
+    """convertir en datetime"""
     if isinstance(date_str, str):
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
         return date_obj.strftime("datetime.date(%Y, %m, %d)")
     return date_str
 
 def format_date1(date_obj):
+    """convertir en datetime"""
     return f"datetime.date({date_obj.year}, {date_obj.month}, {date_obj.day})"
 
 def main():
+    """affichage"""
     args = parse_args()
     start_date = get_start_date(args.debut)
     end_date = get_end_date(args.fin)
@@ -90,11 +93,14 @@ def main():
 
         if historical_data:
             if args.valeur == "volume":
-                print(f"titre={symbol}: valeur=volume, début={format_date(end_date)}, fin={format_date(end_date)}")
+                a = format_date(end_date)
+                print(f"titre={symbol}: valeur=volume, début={a}, fin={a}")
                 for date, volume in historical_data.items():
                     print(f"[({format_date1(date)}, {volume})]")
             else:
-                print(f"titre={symbol}: valeur={args.valeur}, début={format_date(start_date)}, fin={format_date(end_date)}")
+                a=format_date(start_date)
+                b=format_date(end_date)
+                print(f"titre={symbol}: valeur={args.valeur}, début={a}, fin={b}")
                 sorted_data = sorted(historical_data.items())
                 print(sorted_data)
 
